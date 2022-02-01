@@ -26,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
+using Wkhtmltopdf.NetCore;
 
 namespace EMBC.PDFGenerator
 {
@@ -65,6 +66,7 @@ namespace EMBC.PDFGenerator
             }
             services.AddGrpc();
             services.AddPdfGenerator(configuration);
+            services.AddWkhtmltopdf();
             services.AddHealthChecks()
                 .AddCheck("ESS API ready hc", () => HealthCheckResult.Healthy("API ready"), new[] { HealthCheckReadyTag })
                 .AddCheck("ESS API live hc", () => HealthCheckResult.Healthy("API alive"), new[] { HealthCheckAliveTag });

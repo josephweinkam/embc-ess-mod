@@ -18,6 +18,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
+using Wkhtmltopdf.NetCore;
 
 namespace EMBC.PDFGenerator.Utilities.PdfGenerator
 {
@@ -32,9 +33,12 @@ namespace EMBC.PDFGenerator.Utilities.PdfGenerator
         private readonly ILogger<PdfGenerator> logger;
         private readonly Browser browser;
         private bool disposedValue;
+        private readonly IGeneratePdf _generatePdf;
 
-        public PdfGenerator(RevisionInfo puppeteerInfo, ILogger<PdfGenerator> logger)
+        public PdfGenerator(RevisionInfo puppeteerInfo, ILogger<PdfGenerator> logger, IGeneratePdf generatePdf)
         {
+            this._generatePdf = generatePdf;
+
             this.puppeteerInfo = puppeteerInfo;
             this.logger = logger;
             logger.LogInformation("Using Puppeteer from {0}", puppeteerInfo.ExecutablePath);
@@ -52,14 +56,16 @@ namespace EMBC.PDFGenerator.Utilities.PdfGenerator
 
         public async Task<byte[]> Generate(string source)
         {
-            using var page = await browser.NewPageAsync();
-            logger.LogInformation("Created Puppeteer page");
-            await page.SetContentAsync(source);
-            var content = await page.PdfDataAsync(new PdfOptions { PrintBackground = true });
-            logger.LogInformation("Generated pdf with size {0}", content.Length);
-            await page.CloseAsync();
+            return await _generatePdf.GetByteArrayViewInHtml(source);
 
-            return content;
+            //using var page = await browser.NewPageAsync();
+            //logger.LogInformation("Created Puppeteer page");
+            //await page.SetContentAsync(source);
+            //var content = await page.PdfDataAsync(new PdfOptions { PrintBackground = true });
+            //logger.LogInformation("Generated pdf with size {0}", content.Length);
+            //await page.CloseAsync();
+
+            //return content;
         }
 
         protected virtual void Dispose(bool disposing)
