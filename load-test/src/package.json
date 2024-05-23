@@ -33,6 +33,7 @@
     "preloadTest": "webpack --env dev",
     "prebenchmark": "webpack --env dev",
     "prestressTest": "webpack --env dev",
+    "prestepTest": "webpack --env dev",
     "regAnonymous": "k6 run ./dist/registrant-anonymous-test.js",
     "regNewProfile": "k6 run ./dist/registrant-new-profile-test.js",
     "regExistingProfile": "k6 run ./dist/registrant-existing-profile-test.js",
@@ -41,6 +42,7 @@
     "loadTest": "k6 run ./dist/load-test.js",
     "benchmark": "k6 run ./dist/benchmark-test.js",
     "stressTest": "k6 run ./dist/stress-test.js",
+    "stepTest": "k6 run ./dist/step-test.js",
     "gen-registrants-api": "ng-openapi-gen -i https://dev-era-evacuees.apps.silver.devops.gov.bc.ca/api/openapi/v1/openapi.json -o ./src/api/registrants --ignoreUnusedModels false",
     "gen-responders-api": "ng-openapi-gen -i https://dev-era-responders.apps.silver.devops.gov.bc.ca/api/openapi/v1/openapi.json -o ./src/api/responders --ignoreUnusedModels false"
   }

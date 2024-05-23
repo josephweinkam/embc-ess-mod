@@ -33,7 +33,7 @@ export function fillInForm() {
     if (use_random_wait_time)
         sleep(getRandomInt(30, 90));
     else
-        sleep(1);
+        sleep(0);
 }
 
 /** Simulate random wait time to navigate on a page */
@@ -41,7 +41,7 @@ export function navigate() {
     if (use_random_wait_time)
         sleep(getRandomInt(1, 8));
     else
-        sleep(1);
+        sleep(0);
 }
 
 /** Current VU and Iteration identifier */
@@ -144,14 +144,23 @@ export const registrant_thresholds = {
     'reg_submit_file': ['p(95)<10000'], // 10s
     'reg_submit_anonymous': ['p(95)<10000'], // 10s
     'reg_submit_profile': ['p(95)<10000'], // 10s
+    'reg_submit_supports_draft': ['p(95)<10000'], // 10s
+    'reg_submit_support': ['p(95)<10000'], // 10s
+    'res_load_html_time': ['p(95)<10000'], // 10s
     'reg_load_auth_token': ['p(95)<10000'], // 10s
     'reg_load_configuration': ['p(95)<10000'], // 10s
+    'reg_load_openid_configuration': ['p(95)<10000'], // 10s
     'reg_load_security_questions': ['p(95)<10000'], // 10s
     'reg_load_provinces': ['p(95)<10000'], // 10s
     'reg_load_countries': ['p(95)<10000'], // 10s
     'reg_load_communities': ['p(95)<10000'], // 10s
     'reg_load_profile': ['p(95)<10000'], // 10s
     'reg_load_profile_exists': ['p(95)<10000'], // 10s
+    'reg_load_evacuations': ['p(95)<10000'], // 10s
+    'reg_load_conflicts': ['p(95)<10000'], // 10s
+    'reg_load_enum_codes': ['p(95)<10000'], // 10s
+    'reg_load_eligible': ['p(95)<10000'], // 10s
+    'reg_load_supports_draft': ['p(95)<10000'], // 10s
 }
 
 export const responder_thresholds = {
