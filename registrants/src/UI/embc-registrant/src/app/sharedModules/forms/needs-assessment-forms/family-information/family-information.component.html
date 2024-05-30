@@ -3,14 +3,13 @@
     <mat-card-content>
       <div class="row">
         <div class="col-md-12">
-          <label class="card-heading requiredField">
+          <label class="card-heading requiredField" id="warningMember">
             If you have any <strong>household members</strong> (including dependents) who live in the same household
             with you, please add them below.
           </label>
           <p><em>Please note:</em> Roommates & tenants need to register separately.</p>
           @if (dataSource.getValue().length > 0) {
             <mat-table [dataSource]="dataSource">
-              <!--&& showTable-->
               <ng-container matColumnDef="firstName">
                 <mat-header-cell *matHeaderCellDef> First Name </mat-header-cell>
                 <mat-cell *matCellDef="let element">

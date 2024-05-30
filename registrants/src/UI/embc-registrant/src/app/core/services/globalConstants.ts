@@ -43,6 +43,12 @@ export const deleteMemberInfoBody: DialogContent = {
   confirmButton: 'Yes, remove this household member'
 };
 
+export const deletePetInfoBody: DialogContent = {
+  text: '<p>Are you sure you want to remove this pet from your Emergency Support Services (ESS) file?</p>',
+  cancelButton: 'No, Cancel',
+  confirmButton: 'Yes, remove pet'
+};
+
 export const addEssFile: DialogContent = {
   text: 'Add Another Evacuation File'
 };
@@ -68,12 +74,12 @@ export const shelterAllowanceNeedDialog: DialogContent = {
 
 export const shelterReferralNeedDialog: DialogContent = {
   title: 'Referrals',
-  text: 'A paper form provided by an ESS responder, directing evacuated individuals to specific suppliers or facilities for essential needs like food, shelter, clothing, or other necessary items during the evacuation.'
+  text: 'Provided by an ESS responder to direct evacuated individuals to specific suppliers or facilities for essential needs like food, shelter, clothing, or other necessary items during the evacuation.'
 };
 
 export const incidentalsNeedDialog: DialogContent = {
   title: 'Incidentals',
-  text: 'Incidentals could include miscellaneous items such as personal hygiene products such as toothpaste, laundry soap and/or pet food.'
+  text: 'Incidentals could include items such as personal hygiene products like toothpaste, laundry soap and/or pet food.'
 };
 
 export const interacETransferDialog: DialogContent = {
@@ -84,6 +90,12 @@ export const interacETransferDialog: DialogContent = {
 export const interacOptOut: DialogContent = {
   title: 'Referrals',
   text: 'Provided by an ESS responder to direct evacuated individuals to specific suppliers or facilities for essential needs like food, shelter, clothing, or other necessary items during the evacuation.'
+};
+
+export const duplicateHouseholdMemberWarning: DialogContent = {
+  title: 'Duplicate Household Member Detected',
+  text: 'It looks like the member you are trying to add already exists in your household. Please review the existing members before proceeding.',
+  cancelButton: 'Close'
 };
 
 export const securityQuesError = 'An error occurred while loading the security questions. Please try again later';

@@ -8,6 +8,8 @@ using AutoMapper;
 using EMBC.ESS.Utilities.Dynamics;
 using EMBC.ESS.Utilities.Dynamics.Microsoft.Dynamics.CRM;
 using EMBC.Utilities;
+using EMBC.Utilities.Extensions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EMBC.ESS.Resources.Evacuations;
 
@@ -125,6 +127,7 @@ public class EvacuationRepository : IEvacuationRepository
         var file = mapper.Map<era_evacuationfile>(evacuationFile);
         file.era_evacuationfileid = currentFile.era_evacuationfileid;
         file.era_TaskId = currentFile.era_TaskId;
+        file.era_era_evacuationfile_era_householdmember_EvacuationFileid = currentFile.era_era_evacuationfile_era_householdmember_EvacuationFileid;
 
         essContext.AttachTo(nameof(essContext.era_evacuationfiles), file);
         essContext.SetLink(file, nameof(era_evacuationfile.era_EvacuatedFromID), essContext.LookupJurisdictionByCode(file._era_evacuatedfromid_value?.ToString()));
@@ -159,7 +162,13 @@ public class EvacuationRepository : IEvacuationRepository
 
         foreach (var member in needsAssessment.era_era_householdmember_era_needassessment)
         {
-            if (member.era_householdmemberid.HasValue)
+            if (!member.era_householdmemberid.HasValue)
+            {
+                //create member
+                member.era_householdmemberid = Guid.NewGuid();
+                essContext.AddToera_householdmembers(member);
+            }
+            else if (HouseholdMemberChanged(member, file.era_era_evacuationfile_era_householdmember_EvacuationFileid.Single(hm => hm.era_householdmemberid == member.era_householdmemberid)))
             {
                 //update member
                 essContext.AttachTo(nameof(essContext.era_householdmembers), member);
@@ -167,14 +176,19 @@ public class EvacuationRepository : IEvacuationRepository
             }
             else
             {
-                //create member
-                member.era_householdmemberid = Guid.NewGuid();
-                essContext.AddToera_householdmembers(member);
+                essContext.AttachTo(nameof(essContext.era_householdmembers), member);
             }
             AssignHouseholdMember(essContext, file, member);
             AssignHouseholdMember(essContext, needsAssessment, member);
         }
     }
+
+    private static bool HouseholdMemberChanged(era_householdmember hm1, era_householdmember hm2) =>
+        hm1.era_firstname != hm2.era_firstname ||
+        hm1.era_lastname != hm2.era_lastname ||
+        hm1.era_initials != hm2.era_initials ||
+        hm1.era_dateofbirth != hm2.era_dateofbirth ||
+        hm1.era_gender != hm2.era_gender;
 
     private static void AssignPrimaryRegistrant(EssContext essContext, era_evacuationfile file, contact primaryContact)
     {
@@ -279,11 +293,11 @@ public class EvacuationRepository : IEvacuationRepository
 
         var loadTasks = new List<Task>();
 
-        if (file.era_era_evacuationfile_era_animal_ESSFileid == null) loadTasks.Add(ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_era_evacuationfile_era_animal_ESSFileid), ct));
-        if (file.era_era_evacuationfile_era_essfilenote_ESSFileID == null) loadTasks.Add(ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_era_evacuationfile_era_essfilenote_ESSFileID), ct));
+        if (file.era_era_evacuationfile_era_animal_ESSFileid.IsNullOrEmpty()) loadTasks.Add(ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_era_evacuationfile_era_animal_ESSFileid), ct));
+        if (file.era_era_evacuationfile_era_essfilenote_ESSFileID.IsNullOrEmpty()) loadTasks.Add(ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_era_evacuationfile_era_essfilenote_ESSFileID), ct));
         if (file.era_TaskId == null) loadTasks.Add(ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_TaskId), ct));
         if (file.era_Registrant == null) loadTasks.Add(ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_Registrant), ct));
-        if (file.era_era_evacuationfile_era_evacueesupport_ESSFileId == null) loadTasks.Add(ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_era_evacuationfile_era_evacueesupport_ESSFileId), ct));
+        if (file.era_era_evacuationfile_era_evacueesupport_ESSFileId.IsNullOrEmpty()) loadTasks.Add(ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_era_evacuationfile_era_evacueesupport_ESSFileId), ct));
         loadTasks.Add(LoadNeedsAssessment(ctx, file, ct));
 
         await Task.WhenAll(loadTasks);
@@ -294,12 +308,22 @@ public class EvacuationRepository : IEvacuationRepository
         if (file.era_CurrentNeedsAssessmentid == null) await ctx.LoadPropertyAsync(file, nameof(era_evacuationfile.era_CurrentNeedsAssessmentid), ct);
         ctx.AttachTo(nameof(EssContext.era_needassessments), file.era_CurrentNeedsAssessmentid);
         if (file.era_CurrentNeedsAssessmentid.era_TaskNumber == null) await ctx.LoadPropertyAsync(file.era_CurrentNeedsAssessmentid, nameof(era_needassessment.era_TaskNumber), ct);
-        if (file.era_CurrentNeedsAssessmentid.era_EligibilityCheck == null) await ctx.LoadPropertyAsync(file.era_CurrentNeedsAssessmentid, nameof(era_needassessment.era_EligibilityCheck), ct);
+
+        file.era_CurrentNeedsAssessmentid.era_EligibilityCheck = await ctx.era_eligibilitychecks
+            .Expand(ec => ec.era_Task)
+            .Expand(ec => ec.era_era_eligibilitycheck_era_eligiblesupport_EligibilityCheck)
+            .Where(ec => ec._era_needsassessment_value == file.era_CurrentNeedsAssessmentid.era_needassessmentid)
+            .OrderByDescending(ec => ec.createdon)
+            .Take(1)
+            .SingleOrDefaultAsync(ct);
+
         if (file.era_CurrentNeedsAssessmentid.era_EligibilityCheck != null)
         {
-            ctx.AttachTo(nameof(EssContext.era_eligibilitychecks), file.era_CurrentNeedsAssessmentid.era_EligibilityCheck);
-            await ctx.LoadPropertyAsync(file.era_CurrentNeedsAssessmentid.era_EligibilityCheck, nameof(era_eligibilitycheck.era_Task));
-            await ctx.LoadPropertyAsync(file.era_CurrentNeedsAssessmentid.era_EligibilityCheck, nameof(era_eligibilitycheck.era_eligibilitycheck_era_selfservesupport));
+            await file.era_CurrentNeedsAssessmentid.era_EligibilityCheck.era_era_eligibilitycheck_era_eligiblesupport_EligibilityCheck.ForEachAsync(5, async s =>
+            {
+                ctx.AttachTo(nameof(EssContext.era_eligiblesupports), s);
+                await ctx.LoadPropertyAsync(s, nameof(era_eligiblesupport.era_SelfServeSupportLimit), ct);
+            });
         }
 
         var members = await ctx.era_householdmembers
@@ -496,11 +520,18 @@ public class EvacuationRepository : IEvacuationRepository
             if (task == null) throw new ArgumentException($"Task {command.TaskNumber} not found");
             ctx.SetLink(eligibilityCheck, nameof(era_eligibilitycheck.era_Task), task);
 
-            foreach (var supportType in command.EligibleSupports)
+            foreach (var support in command.EligibleSupports)
             {
-                var supportLimit = task.era_era_task_era_selfservesupportlimits_Task.SingleOrDefault(sl => sl.era_supporttypeoption == (int)supportType && sl.statecode == 0);
-                if (supportLimit == null) throw new InvalidOperationException($"Eligibility has support type {supportType} which is not enabled for task {task.era_name}");
-                ctx.AddLink(eligibilityCheck, nameof(era_eligibilitycheck.era_eligibilitycheck_era_selfservesupport), supportLimit);
+                var supportLimit = task.era_era_task_era_selfservesupportlimits_Task.SingleOrDefault(sl => sl.era_supporttypeoption == (int)support.Type && sl.statecode == 0);
+                if (supportLimit == null) throw new InvalidOperationException($"Eligibility has support type {support.Type} which is not enabled for task {task.era_name}");
+                var eligibleSupport = new era_eligiblesupport
+                {
+                    era_eligiblesupportid = Guid.NewGuid(),
+                    era_supporteligible = (int)support.State
+                };
+                ctx.AddToera_eligiblesupports(eligibleSupport);
+                ctx.SetLink(eligibleSupport, nameof(era_eligiblesupport.era_EligibilityCheck), eligibilityCheck);
+                ctx.SetLink(eligibleSupport, nameof(era_eligiblesupport.era_SelfServeSupportLimit), supportLimit);
             }
         }
         await ctx.SaveChangesAsync(ct);
@@ -511,7 +542,10 @@ public class EvacuationRepository : IEvacuationRepository
     private async Task<ManageEvacuationFileCommandResult> Handle(OptoutSelfServe c, CancellationToken ct)
     {
         var ctx = essContextFactory.Create();
-        var check = await ctx.era_eligibilitychecks.Where(ec => ec.era_ESSFile.era_name == c.EvacuationFileNumber).OrderByDescending(ec => ec.createdon).Take(1).SingleOrDefaultAsync(ct);
+        var file = await ctx.era_evacuationfiles.Expand(f => f.era_CurrentNeedsAssessmentid).Where(f => f.era_name == c.EvacuationFileNumber).SingleOrDefaultAsync(ct);
+        if (file == null || file.era_CurrentNeedsAssessmentid == null) throw new InvalidOperationException($"Evacuation file {c.EvacuationFileNumber} not found");
+        await ctx.LoadPropertyAsync(file.era_CurrentNeedsAssessmentid, nameof(era_needassessment.era_EligibilityCheck), ct);
+        var check = file.era_CurrentNeedsAssessmentid.era_EligibilityCheck;
         if (check != null)
         {
             check.era_selfserveoptout = true;

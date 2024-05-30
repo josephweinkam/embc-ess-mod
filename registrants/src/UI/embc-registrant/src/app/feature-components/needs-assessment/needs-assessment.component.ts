@@ -1,8 +1,8 @@
 import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, UntypedFormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ComponentMetaDataModel } from '../../core/model/componentMetaData.model';
-import { ComponentCreationService } from '../../core/services/componentCreation.service';
+import { ComponentCreationService, NeedsAssessmentSteps } from '../../core/services/componentCreation.service';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { FormCreationService } from '../../core/services/formCreation.service';
@@ -12,15 +12,17 @@ import { NonVerifiedRegistrationService } from '../non-verified-registration/non
 import { NeedsAssessmentService } from './needs-assessment.service';
 import { EvacuationFileDataService } from '../../sharedModules/components/evacuation-file/evacuation-file-data.service';
 import * as globalConst from '../../core/services/globalConstants';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/core/components/captcha-v2/captcha-v2.component';
 import { AppLoaderComponent } from '../../core/components/app-loader/app-loader.component';
 import { AlertComponent } from '../../core/components/alert/alert.component';
 import { ReviewComponent } from '../review/review.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ComponentWrapperComponent } from '../../sharedModules/components/component-wrapper/component-wrapper.component';
-import { DraftSupports, EligibilityCheck } from 'src/app/core/api/models';
+import { DraftSupports, EligibilityCheck, EvacuationFileStatus } from 'src/app/core/api/models';
 import { SupportsService } from 'src/app/core/api/services';
+import { input } from '@angular/core';
+import { CustomValidationService } from 'src/app/core/services/customValidation.service';
 
 @Component({
   selector: 'app-needs-assessment',
@@ -37,6 +39,8 @@ import { SupportsService } from 'src/app/core/api/services';
   ]
 })
 export class NeedsAssessmentComponent implements OnInit, AfterViewInit, AfterViewChecked {
+  essFileId = input<string | undefined>();
+
   @ViewChild('needsStepper') private needsStepper: MatStepper;
   needsSteps: Array<ComponentMetaDataModel> = new Array<ComponentMetaDataModel>();
   needsFolderPath = 'needs-assessment-forms';
@@ -52,6 +56,11 @@ export class NeedsAssessmentComponent implements OnInit, AfterViewInit, AfterVie
   showLoader = false;
   isSubmitted = false;
   captchaResponse: CaptchaResponse;
+
+  editFromReview: boolean = false;
+  copyCurrentStepFormValue: any;
+
+  resetIdentifyNeeds = true;
 
   constructor(
     private router: Router,
@@ -81,7 +90,17 @@ export class NeedsAssessmentComponent implements OnInit, AfterViewInit, AfterVie
     } else {
       this.type = 'need';
     }
-    this.needsSteps = this.componentService.createEvacSteps();
+    this.needsSteps = this.componentService
+      .createEvacSteps()
+      .filter(
+        (s) =>
+          this.evacuationFileDataService.evacuationFileStatus !== EvacuationFileStatus.Active ||
+          (this.evacuationFileDataService.evacuationFileStatus === EvacuationFileStatus.Active &&
+            (s.component as unknown as string) !== NeedsAssessmentSteps.EvacAddress)
+      );
+
+    this.needsSteps[0].lastStep = -1;
+    this.needsSteps[0].backButtonLabel = 'Cancel & Go Back to My Profile';
   }
 
   ngAfterViewChecked(): void {
@@ -112,31 +131,62 @@ export class NeedsAssessmentComponent implements OnInit, AfterViewInit, AfterVie
    * @param index index of the step
    */
   loadStepForm(index: number): void {
-    switch (index) {
-      case 0:
+    const step = this.needsSteps?.[index]?.component as unknown as NeedsAssessmentSteps;
+
+    switch (step) {
+      case NeedsAssessmentSteps.EvacAddress:
         this.form$ = this.formCreationService.getEvacuatedForm().subscribe((evacuatedForm) => {
           this.form = evacuatedForm;
+          this.copyCurrentStepFormValue = this.form.getRawValue();
         });
         break;
-      case 1:
+
+      case NeedsAssessmentSteps.FamilyAndPetsInformation:
         this.form$ = combineLatest([
           this.formCreationService.getHouseholdMembersForm(),
           this.formCreationService.getPetsForm()
         ]).subscribe(([householdMemberForm, petsForm]) => {
           this.form = new FormGroup({ householdMemberForm, petsForm });
+          this.copyCurrentStepFormValue = this.form.getRawValue();
         });
         break;
-      case 2:
+
+      case NeedsAssessmentSteps.IdentifyNeeds:
         this.form$ = this.formCreationService.getIndentifyNeedsForm().subscribe((identifyNeedsForm) => {
+          // reset identify needs selection if extending supports with an active ess file
+          if (
+            this.resetIdentifyNeeds &&
+            this.essFileId() &&
+            this.evacuationFileDataService.evacuationFileStatus === EvacuationFileStatus.Active
+          ) {
+            identifyNeedsForm.reset();
+            // reset only once on load, so set the flag to false
+            this.resetIdentifyNeeds = false;
+          }
+
           this.form = identifyNeedsForm;
+          this.copyCurrentStepFormValue = this.form.getRawValue();
         });
         break;
-      case 3:
+
+      case NeedsAssessmentSteps.Secret:
         this.form$ = this.formCreationService.getSecretForm().subscribe((secret) => {
           this.form = secret;
+          this.copyCurrentStepFormValue = this.form.getRawValue();
         });
         break;
+
+      default:
+        break;
     }
+  }
+
+  editStep(step: string) {
+    const stepIndex = this.needsSteps.findIndex(
+      (stepComponent) => (stepComponent.component as unknown as string) === step
+    );
+    this.editFromReview = true;
+    this.needsStepper.selectedIndex = stepIndex;
   }
 
   goBack(stepper: MatStepper, lastStep): void {
@@ -166,21 +216,35 @@ export class NeedsAssessmentComponent implements OnInit, AfterViewInit, AfterVie
     }
   }
 
+  cancelAndGoBackToReview() {
+    // revert the form changes on cancel and do not emit event
+    this.form.setValue(this.copyCurrentStepFormValue, { emitEvent: false });
+
+    this.editFromReview = false;
+    this.needsStepper.selectedIndex = this.needsStepper.steps.length - 1;
+  }
+
+  goBackToReview() {
+    this.editFromReview = false;
+    this.needsStepper.selectedIndex = this.needsStepper.steps.length - 1;
+  }
+
   setFormData(component: string): void {
-    switch (component) {
-      case 'evac-address':
+    const step = component as NeedsAssessmentSteps;
+    switch (step) {
+      case NeedsAssessmentSteps.EvacAddress:
         this.evacuationFileDataService.evacuatedAddress = this.form.get('evacuatedFromAddress').value;
         this.needsAssessmentService.insurance = this.form.get('insurance').value;
         break;
-      case 'family-information-pets':
+      case NeedsAssessmentSteps.FamilyAndPetsInformation:
         this.needsAssessmentService.setHouseHoldMembers(this.form.get('householdMemberForm').value.householdMembers);
 
         this.needsAssessmentService.pets = this.form.get('petsForm').value.pets;
         break;
-      case 'identify-needs':
+      case NeedsAssessmentSteps.IdentifyNeeds:
         this.needsAssessmentService.setNeedsDetails(this.form);
         break;
-      case 'secret':
+      case NeedsAssessmentSteps.Secret:
         this.evacuationFileDataService.secretPhrase = this.form.get('secretPhrase').value;
         this.evacuationFileDataService.secretPhraseEdited = true;
         break;
@@ -253,7 +317,25 @@ export class NeedsAssessmentComponent implements OnInit, AfterViewInit, AfterVie
         next: (draftSupports: DraftSupports) => {
           if (eligibilityCheck?.isEligable && draftSupports?.items?.length > 0)
             this.router.navigate(['/verified-registration/eligible-self-serve/confirm']);
-          else this.router.navigate(['/verified-registration/dashboard']);
+          else
+            this.router.navigate(['/verified-registration/dashboard'], {
+              state: {
+                isNeedsAssessmentUpdatePendingOrExpiredEssFile:
+                  !!this.essFileId() &&
+                  [EvacuationFileStatus.Pending, EvacuationFileStatus.Expired].includes(
+                    this.evacuationFileDataService.evacuationFileStatus
+                  ),
+                isNeedsAssessmentUpdateActiveEssFileForSupports:
+                  !!this.essFileId() &&
+                  [EvacuationFileStatus.Active].includes(this.evacuationFileDataService.evacuationFileStatus) &&
+                  this.evacuationFileDataService.hasNoSupports(this.evacuationFileDataService.supports),
+                isNeedsAssessmentUpdateActiveEssFileForSupportWithExtensions:
+                  !!this.essFileId() &&
+                  [EvacuationFileStatus.Active].includes(this.evacuationFileDataService.evacuationFileStatus) &&
+                  this.evacuationFileDataService.supports?.length > 0 &&
+                  !this.evacuationFileDataService.hasActiveSupports(this.evacuationFileDataService.supports)
+              }
+            });
         },
         error: (error: any) => {
           this.showLoader = !this.showLoader;

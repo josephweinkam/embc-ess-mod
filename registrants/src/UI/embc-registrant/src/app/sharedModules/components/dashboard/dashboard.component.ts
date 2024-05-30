@@ -14,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { SelfServeSubmissionDialogComponent } from 'src/app/core/components/dialog-components/self-serve-submissoin-dialog/self-serve-submission-dialog.component';
+import { EssFileUpdatePendingOrExpiredDialogComponent } from 'src/app/core/components/dialog-components/ess-file-update-pending-or-expired-dialog/ess-file-update-pending-or-expired-dialog.component';
+import { EssFileUpdateActiveDialogComponent } from 'src/app/core/components/dialog-components/ess-file-update-active-dialog/ess-file-update-active-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -78,7 +80,16 @@ export class DashboardComponent implements OnInit {
     const registrationResult = this.needsAssessmentService.getVerifiedEvacuationFileNo();
 
     if (registrationResult !== null) {
-      const { selfServe = null, supportData = null } = this.router.lastSuccessfulNavigation.extras?.state ?? {
+      const {
+        isNeedsAssessmentUpdatePendingOrExpiredEssFile = false,
+        isNeedsAssessmentUpdateActiveEssFileForSupports = false,
+        isNeedsAssessmentUpdateActiveEssFileForSupportWithExtensions = false,
+        selfServe = false,
+        supportData = null
+      } = this.router.lastSuccessfulNavigation.extras?.state ?? {
+        isNeedsAssessmentUpdatePendingOrExpiredEssFile: false,
+        isNeedsAssessmentUpdateActiveEssFileForSupports: false,
+        isNeedsAssessmentUpdateActiveEssFileForSupportWithExtensions: false,
         selfServe: false,
         supportData: null
       };
@@ -89,6 +100,34 @@ export class DashboardComponent implements OnInit {
             data: supportData,
             width: '80%',
             height: '750px',
+            maxWidth: '900px'
+          })
+          .afterClosed()
+          .subscribe(() => {
+            this.needsAssessmentService.setVerifiedEvacuationFileNo(this.emptyRegistrationResult);
+          });
+      } else if (
+        isNeedsAssessmentUpdateActiveEssFileForSupports ||
+        isNeedsAssessmentUpdateActiveEssFileForSupportWithExtensions
+      ) {
+        this.dialog
+          .open(EssFileUpdateActiveDialogComponent, {
+            width: '80%',
+            height: 'auto',
+            maxWidth: '900px',
+            data: {
+              supportWithExtensions: isNeedsAssessmentUpdateActiveEssFileForSupportWithExtensions
+            }
+          })
+          .afterClosed()
+          .subscribe(() => {
+            this.needsAssessmentService.setVerifiedEvacuationFileNo(this.emptyRegistrationResult);
+          });
+      } else if (isNeedsAssessmentUpdatePendingOrExpiredEssFile) {
+        this.dialog
+          .open(EssFileUpdatePendingOrExpiredDialogComponent, {
+            width: '80%',
+            height: 'auto',
             maxWidth: '900px'
           })
           .afterClosed()

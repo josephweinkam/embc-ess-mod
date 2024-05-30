@@ -52,7 +52,8 @@ public class SupportsController(IMessagingClient messagingClient, IMapper mapper
             IsEligable = eligilityCheck.IsEligible,
             From = eligilityCheck.From?.DateTime.ToUniversalTime(),
             To = eligilityCheck.To?.DateTime.ToUniversalTime(),
-            TaskNumber = eligilityCheck.TaskNumber
+            TaskNumber = eligilityCheck.TaskNumber,
+            SupportSettings = mapper.Map<IEnumerable<SelfServeSupportSetting>>(eligilityCheck.SupportSettings)
         });
     }
 
@@ -167,7 +168,10 @@ public record EligibilityCheck
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public string? TaskNumber { get; set; }
+    public IEnumerable<SelfServeSupportSetting> SupportSettings { get; set; }
 }
+
+public record SelfServeSupportSetting(SelfServeSupportType Type, SelfServeSupportEligibilityState State);
 
 public record DraftSupports
 {
@@ -227,6 +231,7 @@ public record SelfServeClothingSupport : SelfServeSupport
     public override SelfServeSupportType Type => SelfServeSupportType.Clothing;
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SelfServeSupportType
 {
     ShelterAllowance,
@@ -234,4 +239,12 @@ public enum SelfServeSupportType
     FoodRestaurant,
     Incidentals,
     Clothing
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SelfServeSupportEligibilityState
+{
+    Available,
+    Unavailable,
+    UnavailableOneTimeUsed
 }
