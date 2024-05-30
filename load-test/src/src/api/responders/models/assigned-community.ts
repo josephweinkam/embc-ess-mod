@@ -1,12 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-
-/**
- * An associated community and team
- */
 export interface AssignedCommunity {
-  communityCode?: string;
+  communityCode?: null | string;
   dateAssigned?: string;
-  teamId?: string;
-  teamName?: string;
+  teamId?: null | string;
+  teamName?: null | string;
 }

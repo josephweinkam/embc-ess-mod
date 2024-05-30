@@ -29,10 +29,6 @@ export class ProfileService extends BaseService {
   static readonly ProfileGetCurrentUserProfilePath = '/api/Profile/current';
 
   /**
-   * Get the current logged in user profile.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `profileGetCurrentUserProfile()` instead.
    *
@@ -57,10 +53,6 @@ export class ProfileService extends BaseService {
   }
 
   /**
-   * Get the current logged in user profile.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `profileGetCurrentUserProfile$Response()` instead.
    *
@@ -80,26 +72,18 @@ export class ProfileService extends BaseService {
   static readonly ProfileUpdatePath = '/api/Profile/current';
 
   /**
-   * Update the current user's profile.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `profileUpdate()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  profileUpdate$Response(params: {
-
-    /**
-     * The profile information
-     */
-    body: UpdateUserProfileRequest
+  profileUpdate$Response(params?: {
+    body?: UpdateUserProfileRequest
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, ProfileService.ProfileUpdatePath, 'post');
     if (params) {
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
 
     return this.http.request(rb.build({
@@ -114,21 +98,13 @@ export class ProfileService extends BaseService {
   }
 
   /**
-   * Update the current user's profile.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `profileUpdate$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  profileUpdate(params: {
-
-    /**
-     * The profile information
-     */
-    body: UpdateUserProfileRequest
+  profileUpdate(params?: {
+    body?: UpdateUserProfileRequest
   }): Observable<void> {
 
     return this.profileUpdate$Response(params).pipe(
@@ -142,10 +118,6 @@ export class ProfileService extends BaseService {
   static readonly ProfileSignAgreementPath = '/api/Profile/agreement';
 
   /**
-   * Current user read and signed the electronic agreement.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `profileSignAgreement()` instead.
    *
@@ -170,10 +142,6 @@ export class ProfileService extends BaseService {
   }
 
   /**
-   * Current user read and signed the electronic agreement.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `profileSignAgreement$Response()` instead.
    *

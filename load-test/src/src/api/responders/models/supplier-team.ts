@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface SupplierTeam {
-  id?: string;
-  name?: string;
+  id?: null | string;
+  name?: null | string;
 }

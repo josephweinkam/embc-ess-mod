@@ -6,13 +6,13 @@ import { SupplierStatus } from './supplier-status';
 import { SupplierTeamDetails } from './supplier-team-details';
 export interface SupplierListItem {
   address?: Address;
-  gstNumber?: string;
-  id?: string;
+  gstNumber?: null | string;
+  id?: null | string;
   isPrimarySupplier?: boolean;
-  legalName?: string;
+  legalName?: null | string;
   mutualAid?: MutualAid;
-  name?: string;
-  primaryTeams?: Array<SupplierTeamDetails>;
+  name?: null | string;
+  primaryTeams?: null | Array<SupplierTeamDetails>;
   providesMutualAid?: boolean;
   status?: SupplierStatus;
 }

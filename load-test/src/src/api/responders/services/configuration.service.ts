@@ -32,10 +32,6 @@ export class ConfigurationService extends BaseService {
   static readonly ConfigurationGetConfigurationPath = '/api/Configuration';
 
   /**
-   * Get configuration settings for clients.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `configurationGetConfiguration()` instead.
    *
@@ -60,10 +56,6 @@ export class ConfigurationService extends BaseService {
   }
 
   /**
-   * Get configuration settings for clients.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `configurationGetConfiguration$Response()` instead.
    *
@@ -83,22 +75,14 @@ export class ConfigurationService extends BaseService {
   static readonly ConfigurationGetCodesPath = '/api/Configuration/codes';
 
   /**
-   * Get code values and descriptions for lookups and enum types.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `configurationGetCodes()` instead.
    *
    * This method doesn't expect any request body.
    */
   configurationGetCodes$Response(params?: {
-
-    /**
-     * enum type name
-     */
     forEnumType?: string;
-  }): Observable<StrictHttpResponse<Array<Code>>> {
+  }): Observable<StrictHttpResponse<Array<(Code | CommunityCode)>>> {
 
     const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ConfigurationGetCodesPath, 'get');
     if (params) {
@@ -111,31 +95,23 @@ export class ConfigurationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Code>>;
+        return r as StrictHttpResponse<Array<(Code | CommunityCode)>>;
       })
     );
   }
 
   /**
-   * Get code values and descriptions for lookups and enum types.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `configurationGetCodes$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   configurationGetCodes(params?: {
-
-    /**
-     * enum type name
-     */
     forEnumType?: string;
-  }): Observable<Array<Code>> {
+  }): Observable<Array<(Code | CommunityCode)>> {
 
     return this.configurationGetCodes$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Code>>) => r.body as Array<Code>)
+      map((r: StrictHttpResponse<Array<(Code | CommunityCode)>>) => r.body as Array<(Code | CommunityCode)>)
     );
   }
 
@@ -160,7 +136,7 @@ export class ConfigurationService extends BaseService {
     if (params) {
       rb.query('stateProvinceId', params.stateProvinceId, {});
       rb.query('countryId', params.countryId, {});
-      rb.query('types', params.types, {"style":"form","explode":true});
+      rb.query('types', params.types, {});
     }
 
     return this.http.request(rb.build({

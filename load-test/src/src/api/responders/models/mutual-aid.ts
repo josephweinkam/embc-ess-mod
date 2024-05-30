@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { SupplierTeam } from './supplier-team';
 export interface MutualAid {
-  givenByTeamId?: string;
+  givenByTeamId?: null | string;
   givenOn?: string;
   givenToTeam?: SupplierTeam;
 }

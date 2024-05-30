@@ -32,10 +32,6 @@ export class TeamsService extends BaseService {
   static readonly TeamsGetTeamsPath = '/api/team';
 
   /**
-   * Get all teams.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsGetTeams()` instead.
    *
@@ -60,10 +56,6 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Get all teams.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsGetTeams$Response()` instead.
    *
@@ -83,20 +75,12 @@ export class TeamsService extends BaseService {
   static readonly TeamsGetTeamsByCommunityPath = '/api/team/community/{communityCode}';
 
   /**
-   * Get teams by community.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsGetTeamsByCommunity()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsGetTeamsByCommunity$Response(params: {
-
-    /**
-     * communityCode
-     */
     communityCode: string;
   }): Observable<StrictHttpResponse<Array<Team>>> {
 
@@ -117,20 +101,12 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Get teams by community.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsGetTeamsByCommunity$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsGetTeamsByCommunity(params: {
-
-    /**
-     * communityCode
-     */
     communityCode: string;
   }): Observable<Array<Team>> {
 
@@ -145,10 +121,6 @@ export class TeamsService extends BaseService {
   static readonly TeamsGetTeamMembersPath = '/api/team/members';
 
   /**
-   * Get all team members.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsGetTeamMembers()` instead.
    *
@@ -173,10 +145,6 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Get all team members.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsGetTeamMembers$Response()` instead.
    *
@@ -196,26 +164,18 @@ export class TeamsService extends BaseService {
   static readonly TeamsCreateTeamMemberPath = '/api/team/members';
 
   /**
-   * Creates a new team member.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsCreateTeamMember()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  teamsCreateTeamMember$Response(params: {
-
-    /**
-     * team member
-     */
-    body: TeamMember
+  teamsCreateTeamMember$Response(params?: {
+    body?: TeamMember
   }): Observable<StrictHttpResponse<TeamMemberResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, TeamsService.TeamsCreateTeamMemberPath, 'post');
     if (params) {
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
 
     return this.http.request(rb.build({
@@ -230,21 +190,13 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Creates a new team member.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsCreateTeamMember$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  teamsCreateTeamMember(params: {
-
-    /**
-     * team member
-     */
-    body: TeamMember
+  teamsCreateTeamMember(params?: {
+    body?: TeamMember
   }): Observable<TeamMemberResult> {
 
     return this.teamsCreateTeamMember$Response(params).pipe(
@@ -258,20 +210,12 @@ export class TeamsService extends BaseService {
   static readonly TeamsGetTeamMemberPath = '/api/team/members/{memberId}';
 
   /**
-   * Get a single team member.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsGetTeamMember()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsGetTeamMember$Response(params: {
-
-    /**
-     * team member id
-     */
     memberId: string;
   }): Observable<StrictHttpResponse<TeamMember>> {
 
@@ -292,20 +236,12 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Get a single team member.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsGetTeamMember$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsGetTeamMember(params: {
-
-    /**
-     * team member id
-     */
     memberId: string;
   }): Observable<TeamMember> {
 
@@ -320,32 +256,20 @@ export class TeamsService extends BaseService {
   static readonly TeamsUpdateTeamMemberPath = '/api/team/members/{memberId}';
 
   /**
-   * Updates team member.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsUpdateTeamMember()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   teamsUpdateTeamMember$Response(params: {
-
-    /**
-     * team member id to update
-     */
     memberId: string;
-
-    /**
-     * team member
-     */
-    body: TeamMember
+    body?: TeamMember
   }): Observable<StrictHttpResponse<TeamMemberResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, TeamsService.TeamsUpdateTeamMemberPath, 'post');
     if (params) {
       rb.path('memberId', params.memberId, {});
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
 
     return this.http.request(rb.build({
@@ -360,26 +284,14 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Updates team member.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsUpdateTeamMember$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   teamsUpdateTeamMember(params: {
-
-    /**
-     * team member id to update
-     */
     memberId: string;
-
-    /**
-     * team member
-     */
-    body: TeamMember
+    body?: TeamMember
   }): Observable<TeamMemberResult> {
 
     return this.teamsUpdateTeamMember$Response(params).pipe(
@@ -393,20 +305,12 @@ export class TeamsService extends BaseService {
   static readonly TeamsDeleteTeamMemberPath = '/api/team/members/{memberId}';
 
   /**
-   * Delete a team member.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsDeleteTeamMember()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsDeleteTeamMember$Response(params: {
-
-    /**
-     * team member id
-     */
     memberId: string;
   }): Observable<StrictHttpResponse<TeamMemberResult>> {
 
@@ -427,20 +331,12 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Delete a team member.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsDeleteTeamMember$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsDeleteTeamMember(params: {
-
-    /**
-     * team member id
-     */
     memberId: string;
   }): Observable<TeamMemberResult> {
 
@@ -455,20 +351,12 @@ export class TeamsService extends BaseService {
   static readonly TeamsActivateTeamMemberPath = '/api/team/members/{memberId}/active';
 
   /**
-   * Activate a team member.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsActivateTeamMember()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsActivateTeamMember$Response(params: {
-
-    /**
-     * team member id
-     */
     memberId: string;
   }): Observable<StrictHttpResponse<TeamMemberResult>> {
 
@@ -489,20 +377,12 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Activate a team member.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsActivateTeamMember$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsActivateTeamMember(params: {
-
-    /**
-     * team member id
-     */
     memberId: string;
   }): Observable<TeamMemberResult> {
 
@@ -517,20 +397,12 @@ export class TeamsService extends BaseService {
   static readonly TeamsDeactivateTeamMemberPath = '/api/team/members/{memberId}/inactive';
 
   /**
-   * Deactivate a team member.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsDeactivateTeamMember()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsDeactivateTeamMember$Response(params: {
-
-    /**
-     * team member id
-     */
     memberId: string;
   }): Observable<StrictHttpResponse<void>> {
 
@@ -551,20 +423,12 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Deactivate a team member.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsDeactivateTeamMember$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   teamsDeactivateTeamMember(params: {
-
-    /**
-     * team member id
-     */
     memberId: string;
   }): Observable<void> {
 
@@ -628,10 +492,6 @@ export class TeamsService extends BaseService {
   static readonly TeamsGetMemberRolesPath = '/api/team/members/codes/memberrole';
 
   /**
-   * Provides a list of team member roles.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsGetMemberRoles()` instead.
    *
@@ -656,10 +516,6 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Provides a list of team member roles.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsGetMemberRoles$Response()` instead.
    *
@@ -679,10 +535,6 @@ export class TeamsService extends BaseService {
   static readonly TeamsGetMemberLabelsPath = '/api/team/members/codes/memberlabel';
 
   /**
-   * Provides a list of team member labels.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `teamsGetMemberLabels()` instead.
    *
@@ -707,10 +559,6 @@ export class TeamsService extends BaseService {
   }
 
   /**
-   * Provides a list of team member labels.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `teamsGetMemberLabels$Response()` instead.
    *

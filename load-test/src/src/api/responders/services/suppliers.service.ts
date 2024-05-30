@@ -30,25 +30,13 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersGetSuppliersPath = '/api/Suppliers';
 
   /**
-   * Search Suppliers.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersGetSuppliers()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersGetSuppliers$Response(params?: {
-
-    /**
-     * legalName
-     */
     legalName?: string;
-
-    /**
-     * gstNumber
-     */
     gstNumber?: string;
   }): Observable<StrictHttpResponse<Array<SupplierListItem>>> {
 
@@ -70,25 +58,13 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Search Suppliers.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersGetSuppliers$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersGetSuppliers(params?: {
-
-    /**
-     * legalName
-     */
     legalName?: string;
-
-    /**
-     * gstNumber
-     */
     gstNumber?: string;
   }): Observable<Array<SupplierListItem>> {
 
@@ -103,26 +79,18 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersCreateSupplierPath = '/api/Suppliers';
 
   /**
-   * Create Supplier.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersCreateSupplier()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  suppliersCreateSupplier$Response(params: {
-
-    /**
-     * supplier
-     */
-    body: Supplier
+  suppliersCreateSupplier$Response(params?: {
+    body?: Supplier
   }): Observable<StrictHttpResponse<SupplierResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, SuppliersService.SuppliersCreateSupplierPath, 'post');
     if (params) {
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
 
     return this.http.request(rb.build({
@@ -137,21 +105,13 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Create Supplier.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersCreateSupplier$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  suppliersCreateSupplier(params: {
-
-    /**
-     * supplier
-     */
-    body: Supplier
+  suppliersCreateSupplier(params?: {
+    body?: Supplier
   }): Observable<SupplierResult> {
 
     return this.suppliersCreateSupplier$Response(params).pipe(
@@ -165,20 +125,12 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersGetSupplierByIdPath = '/api/Suppliers/{supplierId}';
 
   /**
-   * Get Supplier by id.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersGetSupplierById()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersGetSupplierById$Response(params: {
-
-    /**
-     * SupplierId
-     */
     supplierId: string;
   }): Observable<StrictHttpResponse<Supplier>> {
 
@@ -199,20 +151,12 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Get Supplier by id.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersGetSupplierById$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersGetSupplierById(params: {
-
-    /**
-     * SupplierId
-     */
     supplierId: string;
   }): Observable<Supplier> {
 
@@ -227,32 +171,20 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersUpdateSupplierPath = '/api/Suppliers/{supplierId}';
 
   /**
-   * Update supplier.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersUpdateSupplier()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   suppliersUpdateSupplier$Response(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
-
-    /**
-     * supplier
-     */
-    body: Supplier
+    body?: Supplier
   }): Observable<StrictHttpResponse<SupplierResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, SuppliersService.SuppliersUpdateSupplierPath, 'post');
     if (params) {
       rb.path('supplierId', params.supplierId, {});
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
 
     return this.http.request(rb.build({
@@ -267,26 +199,14 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Update supplier.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersUpdateSupplier$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   suppliersUpdateSupplier(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
-
-    /**
-     * supplier
-     */
-    body: Supplier
+    body?: Supplier
   }): Observable<SupplierResult> {
 
     return this.suppliersUpdateSupplier$Response(params).pipe(
@@ -300,20 +220,12 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersRemoveSupplierPath = '/api/Suppliers/{supplierId}/remove';
 
   /**
-   * Remove supplier.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersRemoveSupplier()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersRemoveSupplier$Response(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
   }): Observable<StrictHttpResponse<SupplierResult>> {
 
@@ -334,20 +246,12 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Remove supplier.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersRemoveSupplier$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersRemoveSupplier(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
   }): Observable<SupplierResult> {
 
@@ -362,20 +266,12 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersActivateSupplierPath = '/api/Suppliers/{supplierId}/active';
 
   /**
-   * Activate a supplier.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersActivateSupplier()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersActivateSupplier$Response(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
   }): Observable<StrictHttpResponse<SupplierResult>> {
 
@@ -396,20 +292,12 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Activate a supplier.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersActivateSupplier$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersActivateSupplier(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
   }): Observable<SupplierResult> {
 
@@ -424,20 +312,12 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersDeactivateSupplierPath = '/api/Suppliers/{supplierId}/inactive';
 
   /**
-   * Activate a supplier.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersDeactivateSupplier()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersDeactivateSupplier$Response(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
   }): Observable<StrictHttpResponse<SupplierResult>> {
 
@@ -458,20 +338,12 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Activate a supplier.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersDeactivateSupplier$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersDeactivateSupplier(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
   }): Observable<SupplierResult> {
 
@@ -486,20 +358,12 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersClaimSupplierPath = '/api/Suppliers/{supplierId}/claim';
 
   /**
-   * Claim a supplier.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersClaimSupplier()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersClaimSupplier$Response(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
   }): Observable<StrictHttpResponse<SupplierResult>> {
 
@@ -520,20 +384,12 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Claim a supplier.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersClaimSupplier$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersClaimSupplier(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
   }): Observable<SupplierResult> {
 
@@ -548,25 +404,13 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersAddSupplierSharedWithTeamPath = '/api/Suppliers/{supplierId}/add-team/{sharedTeamId}';
 
   /**
-   * Add a Team the Supplier is shared with.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersAddSupplierSharedWithTeam()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersAddSupplierSharedWithTeam$Response(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
-
-    /**
-     * shared team id
-     */
     sharedTeamId: string;
   }): Observable<StrictHttpResponse<SupplierResult>> {
 
@@ -588,25 +432,13 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Add a Team the Supplier is shared with.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersAddSupplierSharedWithTeam$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersAddSupplierSharedWithTeam(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
-
-    /**
-     * shared team id
-     */
     sharedTeamId: string;
   }): Observable<SupplierResult> {
 
@@ -621,25 +453,13 @@ export class SuppliersService extends BaseService {
   static readonly SuppliersRemoveSupplierSharedWithTeamPath = '/api/Suppliers/{supplierId}/remove-team/{sharedTeamId}';
 
   /**
-   * Remove a Team the Supplier is shared with.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `suppliersRemoveSupplierSharedWithTeam()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersRemoveSupplierSharedWithTeam$Response(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
-
-    /**
-     * shared team id
-     */
     sharedTeamId: string;
   }): Observable<StrictHttpResponse<SupplierResult>> {
 
@@ -661,25 +481,13 @@ export class SuppliersService extends BaseService {
   }
 
   /**
-   * Remove a Team the Supplier is shared with.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `suppliersRemoveSupplierSharedWithTeam$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   suppliersRemoveSupplierSharedWithTeam(params: {
-
-    /**
-     * supplier id
-     */
     supplierId: string;
-
-    /**
-     * shared team id
-     */
     sharedTeamId: string;
   }): Observable<SupplierResult> {
 

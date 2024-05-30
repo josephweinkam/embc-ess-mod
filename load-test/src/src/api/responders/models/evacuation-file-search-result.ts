@@ -6,16 +6,16 @@ import { EvacuationFileStatus } from './evacuation-file-status';
 export interface EvacuationFileSearchResult {
   createdOn?: string;
   evacuatedFrom?: Address;
-  householdMembers?: Array<EvacuationFileSearchResultHouseholdMember>;
-  id?: string;
+  householdMembers?: null | Array<EvacuationFileSearchResultHouseholdMember>;
+  id?: null | string;
   isFileCompleted?: boolean;
   isPaperBasedFile?: boolean;
   isRestricted?: boolean;
-  manualFileId?: string;
+  manualFileId?: null | string;
   modifiedOn?: string;
   status?: EvacuationFileStatus;
   taskEndDate?: null | string;
-  taskId?: string;
-  taskLocationCommunityCode?: string;
+  taskId?: null | string;
+  taskLocationCommunityCode?: null | string;
   taskStartDate?: null | string;
 }

@@ -82,7 +82,7 @@ export class ConfigurationService extends BaseService {
    */
   configurationGetCodes$Response(params?: {
     forEnumType?: string;
-  }): Observable<StrictHttpResponse<Array<(Code | CommunityCode)>>> {
+  }): Observable<StrictHttpResponse<Array<Code>>> {
 
     const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ConfigurationGetCodesPath, 'get');
     if (params) {
@@ -95,7 +95,7 @@ export class ConfigurationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<(Code | CommunityCode)>>;
+        return r as StrictHttpResponse<Array<Code>>;
       })
     );
   }
@@ -108,10 +108,10 @@ export class ConfigurationService extends BaseService {
    */
   configurationGetCodes(params?: {
     forEnumType?: string;
-  }): Observable<Array<(Code | CommunityCode)>> {
+  }): Observable<Array<Code>> {
 
     return this.configurationGetCodes$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<(Code | CommunityCode)>>) => r.body as Array<(Code | CommunityCode)>)
+      map((r: StrictHttpResponse<Array<Code>>) => r.body as Array<Code>)
     );
   }
 
@@ -180,7 +180,7 @@ export class ConfigurationService extends BaseService {
    */
   configurationGetStateProvinces$Response(params?: {
     countryId?: string;
-  }): Observable<StrictHttpResponse<Array<(Code | CommunityCode)>>> {
+  }): Observable<StrictHttpResponse<Array<Code>>> {
 
     const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ConfigurationGetStateProvincesPath, 'get');
     if (params) {
@@ -193,7 +193,7 @@ export class ConfigurationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<(Code | CommunityCode)>>;
+        return r as StrictHttpResponse<Array<Code>>;
       })
     );
   }
@@ -206,10 +206,10 @@ export class ConfigurationService extends BaseService {
    */
   configurationGetStateProvinces(params?: {
     countryId?: string;
-  }): Observable<Array<(Code | CommunityCode)>> {
+  }): Observable<Array<Code>> {
 
     return this.configurationGetStateProvinces$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<(Code | CommunityCode)>>) => r.body as Array<(Code | CommunityCode)>)
+      map((r: StrictHttpResponse<Array<Code>>) => r.body as Array<Code>)
     );
   }
 
@@ -225,7 +225,7 @@ export class ConfigurationService extends BaseService {
    * This method doesn't expect any request body.
    */
   configurationGetCountries$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<(Code | CommunityCode)>>> {
+  }): Observable<StrictHttpResponse<Array<Code>>> {
 
     const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ConfigurationGetCountriesPath, 'get');
     if (params) {
@@ -237,7 +237,7 @@ export class ConfigurationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<(Code | CommunityCode)>>;
+        return r as StrictHttpResponse<Array<Code>>;
       })
     );
   }
@@ -249,10 +249,10 @@ export class ConfigurationService extends BaseService {
    * This method doesn't expect any request body.
    */
   configurationGetCountries(params?: {
-  }): Observable<Array<(Code | CommunityCode)>> {
+  }): Observable<Array<Code>> {
 
     return this.configurationGetCountries$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<(Code | CommunityCode)>>) => r.body as Array<(Code | CommunityCode)>)
+      map((r: StrictHttpResponse<Array<Code>>) => r.body as Array<Code>)
     );
   }
 

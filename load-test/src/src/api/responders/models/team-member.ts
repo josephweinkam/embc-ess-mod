@@ -2,10 +2,6 @@
 /* eslint-disable */
 import { MemberLabel } from './member-label';
 import { MemberRole } from './member-role';
-
-/**
- * Team member
- */
 export interface TeamMember {
   agreementSignDate?: null | string;
   email?: null | string;
@@ -13,12 +9,12 @@ export interface TeamMember {
   id?: null | string;
   isActive?: boolean;
   isUserNameEditable?: boolean;
-  label?: null | MemberLabel;
+  label?: MemberLabel;
   lastName: string;
   lastSuccessfulLogin?: null | string;
   phone?: null | string;
   role: MemberRole;
   teamId?: null | string;
-  teamName?: string;
+  teamName?: null | string;
   userName: string;
 }

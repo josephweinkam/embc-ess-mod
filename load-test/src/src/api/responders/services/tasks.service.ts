@@ -30,20 +30,12 @@ export class TasksService extends BaseService {
   static readonly TasksGetTaskPath = '/api/Tasks/{taskId}';
 
   /**
-   * Get a single ESS task.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `tasksGetTask()` instead.
    *
    * This method doesn't expect any request body.
    */
   tasksGetTask$Response(params: {
-
-    /**
-     * task number
-     */
     taskId: string;
   }): Observable<StrictHttpResponse<EssTask>> {
 
@@ -64,20 +56,12 @@ export class TasksService extends BaseService {
   }
 
   /**
-   * Get a single ESS task.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `tasksGetTask$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   tasksGetTask(params: {
-
-    /**
-     * task number
-     */
     taskId: string;
   }): Observable<EssTask> {
 
@@ -141,15 +125,15 @@ export class TasksService extends BaseService {
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `tasksSignIn()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  tasksSignIn$Response(params: {
-    body: TaskSignin
+  tasksSignIn$Response(params?: {
+    body?: TaskSignin
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, TasksService.TasksSignInPath, 'post');
     if (params) {
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
 
     return this.http.request(rb.build({
@@ -167,10 +151,10 @@ export class TasksService extends BaseService {
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `tasksSignIn$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  tasksSignIn(params: {
-    body: TaskSignin
+  tasksSignIn(params?: {
+    body?: TaskSignin
   }): Observable<void> {
 
     return this.tasksSignIn$Response(params).pipe(

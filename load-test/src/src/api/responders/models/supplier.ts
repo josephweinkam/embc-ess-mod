@@ -8,11 +8,11 @@ import { SupplierTeamDetails } from './supplier-team-details';
 export interface Supplier {
   address?: Address;
   contact?: SupplierContact;
-  gstNumber?: string;
+  gstNumber?: null | string;
   id?: null | string;
-  legalName?: string;
-  mutualAids?: Array<MutualAid>;
+  legalName?: null | string;
+  mutualAids?: null | Array<MutualAid>;
   name?: null | string;
-  primaryTeams?: Array<SupplierTeamDetails>;
+  primaryTeams?: null | Array<SupplierTeamDetails>;
   status?: SupplierStatus;
 }

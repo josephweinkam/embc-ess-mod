@@ -2,11 +2,11 @@
 /* eslint-disable */
 import { HouseholdMemberType } from './household-member-type';
 export interface EvacuationFileSearchResultHouseholdMember {
-  firstName?: string;
-  id?: string;
+  firstName?: null | string;
+  id?: null | string;
   isMainApplicant?: boolean;
   isRestricted?: null | boolean;
   isSearchMatch?: boolean;
-  lastName?: string;
+  lastName?: null | string;
   type?: HouseholdMemberType;
 }

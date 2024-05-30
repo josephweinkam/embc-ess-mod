@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface OidcConfiguration {
-  clientId?: string;
-  issuer?: string;
-  postLogoutRedirectUrl?: string;
-  scope?: string;
+  clientId?: null | string;
+  issuer?: null | string;
+  postLogoutRedirectUrl?: null | string;
+  scope?: null | string;
 }

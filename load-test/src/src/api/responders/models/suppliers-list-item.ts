@@ -3,7 +3,7 @@
 import { Address } from './address';
 export interface SuppliersListItem {
   address?: Address;
-  id?: string;
-  legalName?: string;
-  name?: string;
+  id?: null | string;
+  legalName?: null | string;
+  name?: null | string;
 }

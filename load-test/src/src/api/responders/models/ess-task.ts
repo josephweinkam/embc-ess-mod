@@ -2,11 +2,11 @@
 /* eslint-disable */
 import { TaskWorkflow } from './task-workflow';
 export interface EssTask {
-  communityCode?: string;
-  description?: string;
+  communityCode?: null | string;
+  description?: null | string;
   endDate?: string;
-  id?: string;
+  id?: null | string;
   startDate?: string;
-  status?: string;
-  workflows?: Array<TaskWorkflow>;
+  status?: null | string;
+  workflows?: null | Array<TaskWorkflow>;
 }

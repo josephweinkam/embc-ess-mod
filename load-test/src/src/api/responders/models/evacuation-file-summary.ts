@@ -8,12 +8,12 @@ export interface EvacuationFileSummary {
   evacuatedFromAddress?: Address;
   evacuationFileDate?: string;
   hasSupports?: boolean;
-  id?: string;
+  id?: null | string;
   isPaper?: null | boolean;
   isPerliminary?: boolean;
   isRestricted?: null | boolean;
   issuedOn?: string;
   manualFileId?: null | string;
   status?: EvacuationFileStatus;
-  task?: null | EvacuationFileTask;
+  task?: EvacuationFileTask;
 }

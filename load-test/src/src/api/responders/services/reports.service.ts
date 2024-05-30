@@ -34,7 +34,7 @@ export class ReportsService extends BaseService {
    */
   reportsGetEvacueeReport$Response(params?: {
     reportRequestId?: string;
-  }): Observable<StrictHttpResponse<Blob>> {
+  }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, ReportsService.ReportsGetEvacueeReportPath, 'get');
     if (params) {
@@ -42,12 +42,12 @@ export class ReportsService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/octet-stream'
+      responseType: 'text',
+      accept: '*/*'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
       })
     );
   }
@@ -60,10 +60,10 @@ export class ReportsService extends BaseService {
    */
   reportsGetEvacueeReport(params?: {
     reportRequestId?: string;
-  }): Observable<Blob> {
+  }): Observable<void> {
 
     return this.reportsGetEvacueeReport$Response(params).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
@@ -141,7 +141,7 @@ export class ReportsService extends BaseService {
    */
   reportsGetSupportReport$Response(params?: {
     reportRequestId?: string;
-  }): Observable<StrictHttpResponse<Blob>> {
+  }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, ReportsService.ReportsGetSupportReportPath, 'get');
     if (params) {
@@ -149,12 +149,12 @@ export class ReportsService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/octet-stream'
+      responseType: 'text',
+      accept: '*/*'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
       })
     );
   }
@@ -167,10 +167,10 @@ export class ReportsService extends BaseService {
    */
   reportsGetSupportReport(params?: {
     reportRequestId?: string;
-  }): Observable<Blob> {
+  }): Observable<void> {
 
     return this.reportsGetSupportReport$Response(params).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 

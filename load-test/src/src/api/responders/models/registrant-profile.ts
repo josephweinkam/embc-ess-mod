@@ -4,10 +4,6 @@ import { Address } from './address';
 import { ContactDetails } from './contact-details';
 import { PersonDetails } from './person-details';
 import { SecurityQuestion } from './security-question';
-
-/**
- * Registrant profile
- */
 export interface RegistrantProfile {
   authenticatedUser?: boolean;
   contactDetails: ContactDetails;
@@ -20,6 +16,6 @@ export interface RegistrantProfile {
   personalDetails: PersonDetails;
   primaryAddress: Address;
   restriction: boolean;
-  securityQuestions?: Array<SecurityQuestion>;
+  securityQuestions?: null | Array<SecurityQuestion>;
   verifiedUser?: boolean;
 }
