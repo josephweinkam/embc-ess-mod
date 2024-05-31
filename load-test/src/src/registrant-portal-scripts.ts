@@ -1,5 +1,5 @@
 import { fail } from 'k6';
-import { Rate, Trend } from 'k6/metrics';
+import { Counter, Rate, Trend } from 'k6/metrics';
 import { DraftSupports, SubmitSupportsRequest } from './api/registrants/models';
 import { StrictHttpResponse } from './api/registrants/strict-http-response';
 import { generateEvacuationFile } from './generators/registrants/evacuation-file';
@@ -15,6 +15,12 @@ import { MAX_ITER, MAX_VU, RegistrantTestParameters } from '../load-test.paramet
 const testParams = RegistrantTestParameters;
 const http = new MyHttp();
 const testHttp = new HttpHelper("Registrants");
+
+const selfServeCounter = new Counter('self_serve_count');
+const newProfileCounter = new Counter('new_profile_count');
+const newProfileSelfServeCounter = new Counter('new_profile_self_serve_count');
+const existingProfileCounter = new Counter('existing_profile_count');
+const existingProfileSelfServeCounter = new Counter('existing_profile_self_serve_count');
 
 const loginFailRate = new Rate('reg_failed_to_login');
 const formFailRate = new Rate('reg_failed_form_fetches');
@@ -224,12 +230,14 @@ export function RegistrantNewRegistration() {
 
   if (profile_exists == false) {
     //New Profile
+    newProfileCounter.add(1);
     console.log(`Registrants - ${getIterationName()}: creating new profile`)
     let security_questions = getSecurityQuestions();
     fillInForm();
     createProfile(token, communities, security_questions, selfServe);
   }
   else {
+    existingProfileCounter.add(1);
     console.log(`Registrants - ${getIterationName()}: using existing profile`);
     let conflicts = getConflicts(token);
     if (conflicts && conflicts.length) {
@@ -260,6 +268,10 @@ export function RegistrantNewRegistration() {
       let supports = saveSupportDraft(token, fileRef.referenceNumber, supportInfo);
       saveSupports(token, fileRef.referenceNumber, supports, profile);
       console.log(`Registrants - ${getIterationName()}: Self serve complete!`);
+
+      selfServeCounter.add(1);
+      if (profile_exists) existingProfileSelfServeCounter.add(1);
+      else newProfileSelfServeCounter.add(1);
     }
   }
   else {

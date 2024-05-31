@@ -114,9 +114,13 @@ export function getTimeString(date: Date = new Date()) {
 
 function getSummaryFileDescriptor(): string {
     let descriptor = ``;
+    if (use_random_wait_time) descriptor += "-simulate_wait_times.";
+    else descriptor += "-no_wait_times.";
+
     if (__ENV.VUS) descriptor += __ENV.VUS + "-VUS ";
     if (__ENV.ITERS) descriptor += __ENV.ITERS + "-ITERS ";
     if (__ENV.DUR) descriptor += __ENV.DUR + "-DUR ";
+
     descriptor = descriptor.trim();
     if (descriptor) descriptor = " " + descriptor;
     return descriptor;
