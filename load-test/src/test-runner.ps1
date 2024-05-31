@@ -6,4 +6,13 @@
 # npm run stepTest -- -e VUS=50
 # npm run stepTest -- -e VUS=60
 
-npm run regNewProfile
+# Warm up before running heavier load test
+# npm run stepTest -- -e VUS=5 -e MIN=2 -e WAIT=false
+
+# npm run stepTest -- -e VUS=30
+# npm run stepTest -- -e VUS=35
+# npm run stepTest -- -e VUS=40
+npm run stepTest -- -e VUS=45
+
+
+# npm run regNewProfile

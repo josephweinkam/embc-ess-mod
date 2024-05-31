@@ -3,9 +3,20 @@ import { getSummaryRes, registrant_thresholds, setUseRandomWaitTime } from './ut
 export { RegistrantAnonymousRegistration, RegistrantExistingProfileRegistration, RegistrantNewRegistration } from './registrant-portal-scripts';
 export { ResponderExistingRegistration, ResponderNewRegistration } from './responder-portal-scripts';
 
-const STAGE_DURATION = '10m';
+let STAGE_DURATION = '10m';
 let TARGET_VUS = parseInt(__ENV.VUS || "1");
 if (TARGET_VUS > 100) TARGET_VUS == 100;
+let DURATION_MINUTES = parseInt(__ENV.MIN || "0");
+
+if (__ENV.WAIT == "false") {
+    console.log("Skipping randomw wait times");
+}
+else {
+    setUseRandomWaitTime(true);
+}
+
+
+if (DURATION_MINUTES > 0) STAGE_DURATION = `${DURATION_MINUTES}m`;
 
 let ramp_up_scenario: Scenario = {
     executor: 'ramping-vus',
@@ -31,7 +42,6 @@ export const options: Options = {
     }
 };
 
-// setUseRandomWaitTime(true);
 
 const TEST_TYPE = "step-test";
 

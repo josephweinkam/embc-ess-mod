@@ -131,6 +131,7 @@ const createProfile = (token: any, communities: any, security_questions: any, se
 
 const submitEvacuationFile = (token: any, profile: any, communities: any, selfServe: boolean = false) => {
   const file = generateEvacuationFile(profile.personalDetails, communities, selfServe);
+  // console.log(file);
   return testHttp.post(urls.submit, file, submitFailRate, submitFile, token);
 }
 
@@ -246,6 +247,7 @@ export function RegistrantNewRegistration() {
   let fileRef = submitEvacuationFile(token, profile, communities, selfServe);
   console.log(fileRef)
   let eligibility = getIsEligible(token, fileRef.referenceNumber);
+  // console.log(eligibility);
   if (eligibility && eligibility.isEligable) {
     console.log(`Registrants - ${getIterationName()}: Eligible for self serve!`);
     let should_opt_out = false;
