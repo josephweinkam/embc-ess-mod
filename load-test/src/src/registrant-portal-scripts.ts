@@ -253,11 +253,12 @@ export function RegistrantNewRegistration() {
   fillInForm();
 
   let fileRef = submitEvacuationFile(token, profile, communities, selfServe);
-  console.log(fileRef)
+  console.log(`Registrants - ${getIterationName()}: File created`);
+  // console.log(fileRef)
   let eligibility = getIsEligible(token, fileRef.referenceNumber);
   // console.log(eligibility);
   if (eligibility && eligibility.isEligable) {
-    console.log(`Registrants - ${getIterationName()}: Eligible for self serve!`);
+    console.log(`Registrants - ${getIterationName()}: **** Eligible for self serve! ****`);
     let should_opt_out = false;
     if (should_opt_out) {
       optOut(token, fileRef.referenceNumber);
@@ -275,7 +276,7 @@ export function RegistrantNewRegistration() {
     }
   }
   else {
-    console.log(`Registrants - ${getIterationName()}: Not eligible for self serve`);
+    console.log(`Registrants - ${getIterationName()}: !!!! Not eligible for self serve !!!!`);
   }
 
   getCurrentEvacuations(token);

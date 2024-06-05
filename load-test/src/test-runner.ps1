@@ -12,7 +12,7 @@
 
 # Scenario 2: Increase by 5 each time
 # npm run stepTest -- -e VUS=15 -e DUR=10m -e WAIT=false
-# npm run stepTest -- -e VUS=20 -e DUR=10m -e WAIT=false
+npm run stepTest -- -e VUS=20 -e DUR=5m -e WAIT=false
 # npm run stepTest -- -e VUS=25 -e DUR=10m -e WAIT=false
 # npm run stepTest -- -e VUS=30 -e DUR=10m -e WAIT=false
 # npm run stepTest -- -e VUS=35 -e DUR=10m -e WAIT=false
@@ -24,4 +24,5 @@
 
 
 # npm run regNewProfile
-npm run regNewProfile -- -e VUS=20 -e ITERS=1
+# npm run regNewProfile -- -e VUS=20 -e ITERS=1
+# npm run regNewProfile -- -e VUS=1 -e ITERS=1
